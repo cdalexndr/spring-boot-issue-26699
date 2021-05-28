@@ -1,0 +1,41 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.4'
+}
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+
+repositories {
+    mavenCentral()
+}
+
+tasks.named('wrapper') {
+    gradleVersion = '6.5.1'
+}
+
+dependencies {
+    implementation group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.4'
+    runtimeOnly 'com.h2database:h2'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation group: 'org.testng', name: 'testng', version: '7.3.0'
+}
+
+configurations.implementation.setCanBeResolved(true)
+File springAgent = configurations.implementation.filter { f -> f.name.matches("aspectjweaver.*\\.jar") }.iterator().next();
+if (!springAgent.exists())
+    throw new Exception("Missing aspectjweaver.jar");
+println springAgent
+
+test {
+    useTestNG() {
+//        useDefaultListeners = false
+//        testLogging.showStandardStreams = true
+    }
+    jvmArgs += ["-javaagent:" + springAgent.absolutePath]  //commenting this line causes test to pass (1 of 3)
+}
+
+bootRun {
+    main = 'example.Application'
+    classpath sourceSets.main.runtimeClasspath
+    jvmArgs += ["-javaagent:" + springAgent.path]
+}

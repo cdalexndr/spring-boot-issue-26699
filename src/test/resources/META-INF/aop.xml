@@ -1,0 +1,4 @@
+<aspectj>
+    <weaver options="-nowarn -Xlint:ignore">
+    </weaver>
+</aspectj>
