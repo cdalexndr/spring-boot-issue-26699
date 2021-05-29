@@ -31,7 +31,7 @@ test {
 //        useDefaultListeners = false
 //        testLogging.showStandardStreams = true
     }
-    jvmArgs += ["-javaagent:" + springAgent.absolutePath]  //commenting this line causes test to pass (1 of 3)
+    jvmArgs += ["-javaagent:" + springAgent.absolutePath]
 }
 
 bootRun {
